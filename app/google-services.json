@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "937635910343",
+    "firebase_url": "https://cloudtyper-9a984.firebaseio.com",
+    "project_id": "cloudtyper-9a984",
+    "storage_bucket": "cloudtyper-9a984.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937635910343:android:b82207f3d9f1c99a32a4e2",
+        "android_client_info": {
+          "package_name": "com.color.dictatethenfirebaseidunnowhatever"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937635910343-sjhkv605akk3n52g957ti5lit66vql59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxSaK17RQ8f_ni38L6Gly9IsErl7Xo__c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937635910343-sjhkv605akk3n52g957ti5lit66vql59.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
