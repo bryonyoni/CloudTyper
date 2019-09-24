@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     @Bind(R.id.typeEditText) EditText typeEditText;
     private final String CONVERSATIONS = "Conversation";
+    private String oldText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
                 String word = charSequence.toString();
                 try{
                     Sentence enteredSentence= new Sentence(id,word);
+                    enteredSentence.setOldSentence(oldText);
                     pushRef.setValue(enteredSentence);
+                    oldText = word;
                 }catch (Exception e){
                     e.printStackTrace();
                 }

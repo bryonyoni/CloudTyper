@@ -6,6 +6,7 @@ public class Sentence {
     private String id;
     private List<Word> words;
     private String sentence;
+    private String oldSentence;
 
     public Sentence(){}
 
@@ -40,5 +41,13 @@ public class Sentence {
 
     public void setSentence(String sentence) {
         this.sentence = sentence;
+    }
+
+    public String getOldSentence() {
+        return oldSentence;
+    }
+
+    public void setOldSentence(String oldSentence) {
+        this.oldSentence = oldSentence;
     }
 }
