@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">DictateThenFirebaseIDunnoWhatever</string>
-    <string name="search_something">search something</string>
+    <string name="search_something">say something</string>
 </resources>

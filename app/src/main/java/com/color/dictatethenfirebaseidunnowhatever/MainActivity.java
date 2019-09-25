@@ -1,9 +1,11 @@
 package com.color.dictatethenfirebaseidunnowhatever;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,11 +13,17 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean cancelTimerEntirely = false;
     private boolean hasTimerStarted = false;
 
+    private String id;
+    private Sentence enteredSentence;
+    private List<Sentence> allSentences = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(CONVERSATIONS);
         final DatabaseReference pushRef = ref.push();
-        final String id = pushRef.getKey();
+        id = pushRef.getKey();
 
         typeEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -56,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String word = charSequence.toString();
                 try{
-                    Sentence enteredSentence= new Sentence(id,word);
+                    enteredSentence= new Sentence(id,word);
                     enteredSentence.setOldSentence(oldText);
                     pushRef.setValue(enteredSentence);
                     oldText = word;
@@ -98,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             hasTimerStarted = true;
+            progressBarTimer.setProgress(140);
+            i = MAX_I;
             super.onPreExecute();
         }
 
@@ -185,7 +199,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSentenceInRecyclerView() {
+        if(!enteredSentence.getSentence().equals("")) {
+            Random rnd = new Random();
+            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            enteredSentence.setColor(color);
+            allSentences.add(enteredSentence);
+//            Toast.makeText(getApplicationContext(), "added: " + enteredSentence.getSentence(), Toast.LENGTH_SHORT).show();
+            SentenceAdapter senAdap = new SentenceAdapter(allSentences, MainActivity.this);
+            enteredSentencesRecyclerView.setAdapter(senAdap);
+            LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this);
+            llm.setStackFromEnd(true);
+            enteredSentencesRecyclerView.setLayoutManager(llm);
 
+            typeEditText.setText("");
+            oldText = "";
+
+            progressBarTimer.setProgress(140);
+            i = MAX_I;
+        }
     }
 
     private void Log(String tag,String message){
@@ -196,4 +227,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 }
