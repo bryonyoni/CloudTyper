@@ -8,6 +8,7 @@ public class Sentence {
     private String sentence;
     private String oldSentence;
     private int color;
+    private int backSpace = 0;
 
     public Sentence(){}
 
@@ -58,5 +59,13 @@ public class Sentence {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public int getBackSpace() {
+        return backSpace;
+    }
+
+    public void setBackSpace(int backSpace) {
+        this.backSpace = backSpace;
     }
 }

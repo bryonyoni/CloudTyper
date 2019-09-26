@@ -11,12 +11,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private final String CONVERSATIONS = "Conversation";
     private final int MAX_I = 7000;
     private final int TIME_INTERVAL = 10;
-    private String oldText = "";
+    private String currentWord = "";
 
     private InitTask IT = null;
     private int i = MAX_I;
@@ -46,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private String id;
     private Sentence enteredSentence;
     private List<Sentence> allSentences = new ArrayList<>();
+    private String oldWords = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +58,29 @@ public class MainActivity extends AppCompatActivity {
         typeEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                Log.e("MainActivity","beforeTextChanged");
+                Log.e("MainActivity","charSequence: "+charSequence.toString());
+                Log.e("MainActivity","int i: "+i);
+                Log.e("MainActivity","int i1: "+i1);
+                Log.e("MainActivity","int i2: "+i2);
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String word = charSequence.toString();
+                Log.e("MainActivity","onTextChanged");
+                Log.e("MainActivity","charSequence: "+charSequence.toString());
+                Log.e("MainActivity","int i: "+i);
+                Log.e("MainActivity","int i1: "+i1);
+                Log.e("MainActivity","int i2: "+i2);
+                String word = charSequence.subSequence(i,i+i2).toString();
+                Log.e("MainActivity","word: "+word);
                 try{
                     enteredSentence= new Sentence(id,word);
-                    enteredSentence.setOldSentence(oldText);
-                    pushRef.setValue(enteredSentence);
-                    oldText = word;
+                    enteredSentence.setBackSpace(i1);
+                    enteredSentence.setOldSentence("");
+
+                    currentWord = word;
+                    oldWords = word;
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -79,14 +88,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!typeEditText.getText().toString().equals("")){
+                Log.e("MainActivity","afterTextChanged: "+editable.toString());
+                pushRef.setValue(enteredSentence);
+                if (!currentWord.equals("")){
                     cancelTimerEntirely = true;
                     progressBarTimer.setProgress(140);
                     i = MAX_I;
 
                     hasTimerStarted = false;
                     startTimer();
-                }else if(typeEditText.getText().toString().equals("")){
+                }else if(currentWord.equals("")){
                     cancelTimerEntirely = true;
                     progressBarTimer.setProgress(140);
                     i = MAX_I;
@@ -94,15 +105,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (!typeEditText.getText().toString().equals("") && hasTimerStarted){
-            startTimer();
-        }
     }
 
     private void startTimer(){
-        cancelTimerEntirely = false;
-        IT = new InitTask();
-        IT.execute();
+        if(!hasTimerStarted) {
+            cancelTimerEntirely = false;
+            IT = new InitTask();
+            IT.execute();
+        }
     }
 
     protected class InitTask extends AsyncTask<Context, Integer, String> {
@@ -132,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            if(!typeEditText.getText().toString().equals("")) {
+            if(!currentWord.equals("")) {
                 progressBarTimer.incrementProgressBy(-1);
             }else{
                 cancelTimerEntirely = true;
@@ -199,7 +209,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSentenceInRecyclerView() {
-        if(!enteredSentence.getSentence().equals("")) {
+        boolean canSet = false;
+        if(allSentences.size()!=0){
+            Sentence lastS = allSentences.get(allSentences.size()-1);
+            if(!enteredSentence.getSentence().equals(lastS.getSentence())){
+                canSet = true;
+            }
+        }else canSet = true;
+
+        if(!enteredSentence.getSentence().equals("") && canSet) {
             Random rnd = new Random();
             int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
             enteredSentence.setColor(color);
@@ -211,8 +229,8 @@ public class MainActivity extends AppCompatActivity {
             llm.setStackFromEnd(true);
             enteredSentencesRecyclerView.setLayoutManager(llm);
 
-            typeEditText.setText("");
-            oldText = "";
+//            typeEditText.setText("");
+            currentWord = "";
 
             progressBarTimer.setProgress(140);
             i = MAX_I;

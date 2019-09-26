@@ -10,16 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/greyish"
-            android:layout_alignParentBottom="true"
             app:cardCornerRadius="14dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="90dp"
             app:cardElevation="0dp"
             android:layout_height="match_parent">
 
@@ -32,18 +30,16 @@
                 android:padding="10dp"
                 android:layout_height="match_parent"/>
 
-
-
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/greyish"
-            android:layout_alignParentBottom="true"
             app:cardCornerRadius="14dp"
+            android:layout_alignParentBottom="true"
             android:layout_margin="10dp"
             app:cardElevation="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="70dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -54,11 +50,12 @@
                     android:layout_width="match_parent"
                     android:background="@null"
                     android:layout_marginLeft="5dp"
+                    android:gravity="bottom"
                     android:layout_marginRight="5dp"
                     android:hint="@string/search_something"
-                    android:padding="10dp"
+                    android:padding="5dp"
                     android:textSize="13sp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent"/>
 
                 <ProgressBar
                     android:id="@+id/progressBarTimer"
