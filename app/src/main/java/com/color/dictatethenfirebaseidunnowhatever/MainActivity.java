@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.enteredSentencesRecyclerView) RecyclerView enteredSentencesRecyclerView;
     @Bind(R.id.progressBarTimer) ProgressBar progressBarTimer;
     @Bind(R.id.endBtn) Button endBtn;
+    @Bind(R.id.startBtn) Button startBtn;
     private final String CONVERSATIONS = "Conversation";
+    public static final String ONNODE = "OnNode";
     private final int MAX_I = 7000;
     private final int TIME_INTERVAL = 10;
     private String currentWord = "";
@@ -118,6 +121,21 @@ public class MainActivity extends AppCompatActivity {
                 enteredSentence.setOldSentence(oldWords);
 
                 pushRef.setValue(enteredSentence);
+                Toast.makeText(getApplicationContext(),"Listener Ended",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                endBtn.performClick();
+                enteredSentence= new Sentence(id,"xxxxxxxx");
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(ONNODE);
+                final DatabaseReference pushRef = ref.push();
+                pushRef.setValue(enteredSentence);
+
+                Toast.makeText(getApplicationContext(),"Listener Started",Toast.LENGTH_SHORT).show();
             }
         });
     }
