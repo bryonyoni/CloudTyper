@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.typeEditText) EditText typeEditText;
     @Bind(R.id.enteredSentencesRecyclerView) RecyclerView enteredSentencesRecyclerView;
     @Bind(R.id.progressBarTimer) ProgressBar progressBarTimer;
+    @Bind(R.id.endBtn) Button endBtn;
     private final String CONVERSATIONS = "Conversation";
     private final int MAX_I = 7000;
     private final int TIME_INTERVAL = 10;
@@ -72,12 +75,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity","int i: "+i);
                 Log.e("MainActivity","int i1: "+i1);
                 Log.e("MainActivity","int i2: "+i2);
-                String word = charSequence.subSequence(i,i+i2).toString();
+//                String word = charSequence.subSequence(i,i+i2).toString();
+                String word = charSequence.toString();
                 Log.e("MainActivity","word: "+word);
                 try{
                     enteredSentence= new Sentence(id,word);
                     enteredSentence.setBackSpace(i1);
-                    enteredSentence.setOldSentence("");
+                    enteredSentence.setOldSentence(oldWords);
 
                     currentWord = word;
                     oldWords = word;
@@ -105,6 +109,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        endBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enteredSentence= new Sentence(id,"xxxxxxxx");
+                enteredSentence.setBackSpace(0);
+                enteredSentence.setOldSentence(oldWords);
+
+                pushRef.setValue(enteredSentence);
+            }
+        });
     }
 
     private void startTimer(){
