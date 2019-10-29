@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.progressBarTimer) ProgressBar progressBarTimer;
     @Bind(R.id.endBtn) Button endBtn;
     @Bind(R.id.startBtn) Button startBtn;
+    @Bind(R.id.clearBtn) ImageView clearBtn;
     private final String CONVERSATIONS = "Conversation";
     public static final String ONNODE = "OnNode";
     private final int MAX_I = 7000;
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private Sentence enteredSentence;
     private List<Sentence> allSentences = new ArrayList<>();
     private String oldWords = "";
+    private int lastChar = 0;
+    private boolean isClearingEditText = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +66,20 @@ public class MainActivity extends AppCompatActivity {
         final DatabaseReference pushRef = ref.push();
         id = pushRef.getKey();
 
+        if(!typeEditText.getText().toString().trim().equals("")){
+            clearBtn.setAlpha(1f);
+        }else{
+            clearBtn.setAlpha(0.4f);
+        }
+
         typeEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Log.e("MainActivity","beforeTextChanged");
-                Log.e("MainActivity","charSequence: "+charSequence.toString());
-                Log.e("MainActivity","int i: "+i);
-                Log.e("MainActivity","int i1: "+i1);
-                Log.e("MainActivity","int i2: "+i2);
+//                Log.e("MainActivity","beforeTextChanged");
+//                Log.e("MainActivity","charSequence: "+charSequence.toString());
+//                Log.e("MainActivity","int i: "+i);
+//                Log.e("MainActivity","int i1: "+i1);
+//                Log.e("MainActivity","int i2: "+i2);
             }
 
             @Override
@@ -78,9 +89,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity","int i: "+i);
                 Log.e("MainActivity","int i1: "+i1);
                 Log.e("MainActivity","int i2: "+i2);
-//                String word = charSequence.subSequence(i,i+i2).toString();
+
+                if(!typeEditText.getText().toString().trim().equals("")){
+                    clearBtn.setAlpha(1f);
+                }else{
+                    clearBtn.setAlpha(0.4f);
+                }
+
+                if(enteredSentence!=null) {
+                    int numberOfErases = charSequence.subSequence(i,charSequence.length()).length()+i2;
+                    Log.e("MainActivity", "number of erases: " + numberOfErases);
+                    String changedWords = charSequence.subSequence(i, charSequence.length()).toString();
+                    Log.e("MainActivity", "changed words: " + changedWords);
+                }
+
                 String word = charSequence.toString();
                 Log.e("MainActivity","word: "+word);
+
                 try{
                     enteredSentence= new Sentence(id,word);
                     enteredSentence.setBackSpace(i1);
@@ -96,7 +121,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 Log.e("MainActivity","afterTextChanged: "+editable.toString());
-                pushRef.setValue(enteredSentence);
+                enteredSentence.setBackSpace(0);
+                enteredSentence.setWordsToAdd("");
+                if(enteredSentence!=null) {
+                    for (int i = 0; i < enteredSentence.getOldSentence().length(); i++) {
+                        if(editable.toString().length()>i && enteredSentence.getOldSentence().length()>i) {
+                            if (editable.toString().charAt(i) != enteredSentence.getOldSentence().charAt(i)) {
+                                int char2erase = editable.toString().substring(i).length() - 1;
+                                String charr = editable.toString().substring(i);
+                                enteredSentence.setBackSpace(char2erase);
+                                enteredSentence.setWordsToAdd(charr);
+                                Log.e("MainActivity", "number of erases to make: " + char2erase);
+                                Log.e("MainActivity", "characters to write: " + charr);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if(!isClearingEditText){
+                    pushRef.setValue(enteredSentence);
+                }else{
+                    isClearingEditText = false;
+                }
+
                 if (!currentWord.equals("")){
                     cancelTimerEntirely = true;
                     progressBarTimer.setProgress(140);
@@ -104,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
                     hasTimerStarted = false;
                     startTimer();
-                }else if(currentWord.equals("")){
+                }else{
                     cancelTimerEntirely = true;
                     progressBarTimer.setProgress(140);
                     i = MAX_I;
@@ -122,6 +169,16 @@ public class MainActivity extends AppCompatActivity {
 
                 pushRef.setValue(enteredSentence);
                 Toast.makeText(getApplicationContext(),"Listener Ended",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!typeEditText.getText().toString().trim().equals("")) {
+                    isClearingEditText = true;
+                    typeEditText.setText("");
+                }
             }
         });
 
