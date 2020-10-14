@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.endBtn) Button endBtn;
     @Bind(R.id.startBtn) Button startBtn;
     @Bind(R.id.clearBtn) ImageView clearBtn;
+    @Bind(R.id.sendBtn) ImageView sendBtn;
     private final String CONVERSATIONS = "Conversation";
     public static final String ONNODE = "OnNode";
     private final int MAX_I = 7000;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private String oldWords = "";
     private int lastChar = 0;
     private boolean isClearingEditText = false;
+    private boolean isSendingViaButton = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if(!isClearingEditText){
-                    pushRef.setValue(enteredSentence);
+//                    pushRef.setValue(enteredSentence);
                 }else{
                     isClearingEditText = false;
                 }
@@ -195,13 +197,26 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Listener Started",Toast.LENGTH_SHORT).show();
             }
         });
+
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enteredSentence.setSentence(typeEditText.getText().toString().trim());
+                enteredSentence.setOldSentence("");
+                pushRef.setValue(enteredSentence);
+                enteredSentence.setOldSentence(typeEditText.getText().toString().trim());
+                setSentenceInRecyclerView();
+            }
+        });
     }
 
     private void startTimer(){
-        if(!hasTimerStarted) {
-            cancelTimerEntirely = false;
-            IT = new InitTask();
-            IT.execute();
+        if(!isSendingViaButton){
+            if(!hasTimerStarted) {
+                cancelTimerEntirely = false;
+                IT = new InitTask();
+                IT.execute();
+            }
         }
     }
 

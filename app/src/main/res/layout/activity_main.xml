@@ -16,7 +16,7 @@
             app:cardCornerRadius="14dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="80dp"
             android:layout_marginBottom="90dp"
             app:cardElevation="0dp"
             android:layout_height="match_parent">
@@ -51,27 +51,29 @@
                     android:background="@null"
                     android:layout_marginLeft="5dp"
                     android:gravity="bottom"
-                    android:layout_marginRight="5dp"
-                    android:hint="@string/search_something"
+                    android:layout_marginRight="50dp"
                     android:padding="5dp"
                     android:textSize="13sp"
                     android:layout_height="match_parent"/>
 
                 <ImageView
                     android:id="@+id/clearBtn"
-                    android:layout_width="20dp"
+                    android:layout_width="40dp"
                     android:src="@drawable/ic_action_clear"
                     android:background="@color/greyish"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
                     android:layout_marginTop="5dp"
-                    android:layout_height="20dp"/>
+                    android:layout_height="40dp"/>
+
 
                 <ProgressBar
                     android:id="@+id/progressBarTimer"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:visibility="invisible"
                     android:indeterminate="false"
                     android:max="140"
                     android:progress="140"/>
@@ -85,16 +87,31 @@
             android:layout_width="wrap_content"
             android:text="end"
             android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark"
             android:layout_margin="15dp"
             android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/startBtn"
             android:layout_width="wrap_content"
+            android:visibility="invisible"
             android:text="start"
             android:layout_marginTop="30dp"
             android:layout_margin="15dp"
             android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/sendBtn"
+            android:layout_width="40dp"
+            android:src="@drawable/ic_action_send"
+            android:background="@color/greyish"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="35dp"
+            android:layout_height="40dp"/>
 
     </RelativeLayout>
 
